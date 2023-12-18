@@ -1,0 +1,263 @@
+
+:root{
+    --boxColor: #0ff7;
+    --rotateSpeed: 30s;
+}
+body{
+   background-color: #000;
+   /* note the vh used and note the vw.*/
+   min-height: 100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center; 
+   font-size: 75px;
+   perspective: 10em;
+   /*note the subtraction perfomed */
+   perspective-origin: 50% calc(50% - 2em);
+   /*the calc there means we want to look at 
+   it on the 50% y axis but then we also want
+   to move up by 2ems, and as you know moving up
+   we always use -2em, to illustrate we are moving
+   closer and not away from the top. */
+   
+}
+.scene{
+    /*Note that the ball rotates but then we can see
+    that its not circular, so to counter that effect
+    we simmply copy the same animation name but change
+    the animation direction.*/
+    position: relative;
+    transform-style: preserve-3d;
+    animation: testAnimation var(--rotateSpeed) infinite linear;
+}
+@keyframes testAnimation{
+    to{ transform: rotateY(360deg);}
+}
+.ball{
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background: lightblue;
+
+    position: absolute;
+    left: -0.5em;
+    bottom: 1em;
+
+    /*the radial cosloring of the image:-
+    Note how the circle at top keyword is used cause this is a 
+    circle.
+    note that the radial gradient has a midpoint which you can play
+    with to change the coverage of your color:-
+    see how i HAVE USED IT(its in percent %),
+    Also note that the radial gradient  for a circle has a lot
+    of commas as opposed to the radial gradient for 
+    squares which has pnly two. hahaha*/
+
+    background-image: radial-gradient(circle at top, lightblue,40%,#000);
+    /*This is a very hot trick by the way hahaha
+    so meaning one animation can be used on two
+    different objects */
+    animation: bounceAnimation 1s infinite linear, testAnimation var(--rotateSpeed) infinite linear reverse;
+    /*animation: bounceAnimation 30s infinite linear;*/
+}
+@keyframes bounceAnimation{
+    0%,100%{ bottom: -0.5em;}
+    50%{ bottom: 3em;}
+}
+/*I finally used this format cause it was able
+to directly inherit the preserve 3d transform
+style from its parent: scene. Hence I had
+to declare each element independently. */
+.front{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+        /*It was initially top -1em but then I've
+    changed it to bottom -1em because we dont want the 
+    bottom to move, instead we only need the 
+    top to be animated. */
+    bottom: -1em;
+    left: -1em;
+    background-color: var(--boxColor);
+    transform: translateZ(1em);
+    animation: sideShrink 1s infinite linear;
+    /*inset is a nice feature to revert the box
+    shadow to be inside of an element such as
+    a 3d element instead of outside.
+    The good thing is that it places the shadows in
+    all the edges of the particular side, e.g in this
+    case the front side.
+    Note however that I have placed this feature
+    for all of the sides, so all of the sides have
+    a box shadow effect.
+    I have */
+    box-shadow: 0 0 0.5em #000 inset ;
+}
+@keyframes sideShrink{
+    /*we now use the height as part of the animation.
+    cause you realize that we've not set the top
+    so it will the one that would be animated. */
+    0%,100%{height: 1em;}
+    50%{height: 2em;}
+}
+.right{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    bottom: -1em;
+    left: -1em;
+    background-color: var(--boxColor);
+    transform: rotateY(90deg) translateZ(1em);
+    box-shadow: 0 0 0.5em #000 inset;
+    animation: sideShrink 1s infinite linear;
+}
+.back{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    bottom: -1em;
+    left: -1em;
+    background-color: var(--boxColor);
+    transform: rotateY(180deg) translateZ(1em);
+    box-shadow: 0 0 0.5em #000 inset ;
+    animation: sideShrink 1s infinite linear;
+}
+.left{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    bottom: -1em;
+    left: -1em;
+    background-color: var(--boxColor);
+    transform: rotateY(270deg) translateZ(1em);
+    box-shadow: 0 0 0.5em #000 inset ;
+    animation: sideShrink 1s infinite linear;
+}
+.top{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    top: -1em;
+    left: -1em;
+    background-color: var(--boxColor);
+    transform: translateY(-50%) rotateX(90deg);
+    box-shadow: 0 0 0.5em #000 inset ;
+    animation: boxShrink 1s infinite linear;
+}
+@keyframes boxShrink{
+    0%,100%{transform: translateY(0%) rotateX(90deg) ;}
+    50%{transform: translateY(-50%) rotateX(90deg);}
+}
+
+.bottom{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    top: -1em;
+    left: -1em;
+    /*Note here how the color is set to black with an opacity
+    of 7 */
+    background-color: #0007;
+    transform: translateY(50%) rotateX(90deg);
+    /*Note here its outset by default which is the 
+    opposite of the inset.
+    meaning shadow is shed to the outside.
+    No wonder the bottom part seems darker.*/
+    box-shadow: 0 0 0.5em #000;
+}
+/* The TUTORIAL'S PREFFERED SASS VERION.*/
+/*.cube{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    top: -1em;
+    left: -1em;
+    transform: rotateY(90deg) translateZ(1em); 
+    .front,.back,.left,.right{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        
+        background-color: var(--boxColor);
+    }
+    .front{transform: translateZ(1em);}
+    .right{transform: rotateY(90deg) translateZ(1em);}
+    .back{transform: rotateY(180deg) translateZ(1em);}
+    .left{transform: rotateY(270deg) translateZ(1em)}
+}*/
+/*Note that this are the cube's children */
+/*My own tried formula for transforming the 
+sass format to the css standard which clearly
+failed. hahaha */
+/*
+.front,.back,.left,.right{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    background-color: var(--boxColor);
+}
+.cube.front{transform: translateZ(1em);}
+.cube.right{transform: rotateY(90deg) translateZ(1em);}
+.cube.back{transform: rotateY(180deg) translateZ(1em);}
+.cube.left{transform: rotateY(270deg) translateZ(1em)}*/
+.floor{
+    /*Note here that we changed the width and height
+    values from 5px to 15px because of the initial
+    perspective that we used. inorder for it
+    to cover the whole space of the page.*/
+    width: 15em;
+    height: 15em;
+    background-image:
+    /*Note that radial gradient is calculated from the 
+    center to the corners.
+    here we have just added it before the 
+    repeating-conic-gradient but you could decide
+    to use it separately.*/ 
+    /* Hexadecimal opacity comes right after the 
+    last element so dont confuse it for another
+    color digit, e,g in this one down here. */
+    /*We've added the 75 percent beside the black color
+    to ensuer that the black color has circular
+    edges.*/
+    /*radial gradient colors outwards,note that here
+    the center of the floor will be transparent
+    while towards the outward will be really
+    dark. */
+    radial-gradient(#0000,#000 75%),
+    repeating-conic-gradient(from 45deg,#1111 0deg 90deg,#222 90deg 180deg);
+    /*Dont forget the comma after the 100% it indicates
+    that that is for the radial gradient which appears
+    first in this case. */
+    background-size: 100%, 1em 1em;
+
+    position: absolute;
+    transform: translate(-50%, -50%) rotateX(90deg);
+    top: 1em;
+}
+.boxShadow{
+    position: absolute;
+    width: 2em;
+    height: 2em;
+
+    top: -1em;
+    left: -1em;
+    /*take keen note that on radial gradients
+    you can always determine the percentage 
+    of either color on either side of the
+    radial gradient. */
+    background-image: radial-gradient(#000 10%,#0000);
+    transform: translateY(-50%) rotateX(90deg);
+    animation: boxShrink 1s infinite linear;
+}
+@keyframes boxShrink{
+    0%,100%{transform: translateY(0%) rotateX(90deg) ;}
+    50%{transform: translateY(-50%) rotateX(90deg);opacity: 0.5;}
+}
